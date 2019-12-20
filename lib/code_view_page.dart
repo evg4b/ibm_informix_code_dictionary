@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ibm_informix_code_dictionary/widgets/code_view.dart';
 
 import 'models/status_code.dart';
 
 final controller = PageController(initialPage: 1);
 
 class CodeViewPage extends StatelessWidget {
-  StatusCode statusCode;
+  final StatusCode statusCode;
   CodeViewPage({this.statusCode});
 
   @override
@@ -14,7 +15,7 @@ class CodeViewPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(this.statusCode.descriptionRus),
+          title: Text(this.statusCode.shortDescriptionRus),
           bottom: TabBar(
             tabs: [
               Tab(text: "Русский"),
@@ -24,8 +25,16 @@ class CodeViewPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Icon(Icons.directions_transit),
-            Icon(Icons.directions_transit),
+            CodeViewWidget(
+              label: "Код",
+              title: this.statusCode.shortDescriptionRus,
+              description: this.statusCode.descriptionRus,
+            ),
+            CodeViewWidget(
+              label: "Code",
+              title: this.statusCode.shortDescriptionEng,
+              description: this.statusCode.descriptionEng,
+            ),
           ],
         ),
       ),

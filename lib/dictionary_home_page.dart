@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ibm_informix_code_dictionary/code_view_page.dart';
 import 'package:ibm_informix_code_dictionary/models/status_code.dart';
 
-import 'code_list_tile.dart';
+import 'widgets/code_list_tile.dart';
 import 'models/status_code_list_item.dart';
 
 class DictionaryHomePage extends StatefulWidget {
@@ -15,14 +15,6 @@ class DictionaryHomePage extends StatefulWidget {
 }
 
 class _DictionaryHomePageState extends State<DictionaryHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +23,9 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
         itemCount: 9000,
         itemBuilder: (context, index) {
           var statusCode = StatusCodeListItem(
-              codes: "$index", description: "Descriptio nof $index");
+              codes: "$index",
+              description: "Descriptio nof $index"
+          );
           return CodeListTile(
               statusCode: statusCode,
               onPress: () {
@@ -39,16 +33,16 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => CodeViewPage(
-                              statusCode: StatusCode(code: "demo"),
-                            )));
+                            statusCode: StatusCode(
+                              code: statusCode.codes, 
+                              descriptionRus: "dklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfk"
+                            ),
+                        )
+                    )
+                );
               });
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

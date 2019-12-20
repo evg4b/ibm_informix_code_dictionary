@@ -1,4 +1,4 @@
-# ibm_informix_code_dictionary
+# IBM Informix code dictionary
 
 A new Flutter application.
 
