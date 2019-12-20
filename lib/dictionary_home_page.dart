@@ -18,7 +18,6 @@ class DictionaryHomePage extends StatefulWidget {
 }
 
 class _DictionaryHomePageState extends State<DictionaryHomePage> {
-
   TextEditingController _searchQuery;
   bool _isSearching = false;
   String searchQuery = "";
@@ -38,19 +37,17 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
         actions: _buildActions(),
       ),
       body: ListView.builder(
-            itemCount: 20,
-            itemBuilder: (context, index) {
-              var statusCode = StatusCodeListItem(
-                  codes: "$index",
-                  description: "Descriptio nof $index"
-              );
-              return CodeListTile(
-                  statusCode: statusCode,
-                  onPress:  _selectCode(statusCode),
-              );
-            }
-          ),
-      );
+          itemCount: 20,
+          itemBuilder: (context, index) {
+            var statusCode = StatusCodeListItem(
+                codes: "$index", description: "Descriptio nof $index");
+            print("Build $index item");
+            return CodeListTile(
+              statusCode: statusCode,
+              onPress: _selectCode(statusCode),
+            );
+          }),
+    );
   }
 
   Function _selectCode(StatusCodeListItem statusCode) {
@@ -59,13 +56,11 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
           context,
           MaterialPageRoute(
               builder: (context) => CodeViewPage(
-                  statusCode: StatusCode(
-                    code: statusCode.codes, 
-                    descriptionRus: "dklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfk"
-                  ),
-              )
-          )
-      );
+                    statusCode: StatusCode(
+                        code: statusCode.codes,
+                        descriptionRus:
+                            "dklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfk"),
+                  )));
       _stopSearching();
     };
   }
@@ -136,8 +131,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
 
   void _startSearch() {
     print("open search box");
-    ModalRoute
-        .of(context)
+    ModalRoute.of(context)
         .addLocalHistoryEntry(new LocalHistoryEntry(onRemove: _stopSearching));
 
     setState(() {

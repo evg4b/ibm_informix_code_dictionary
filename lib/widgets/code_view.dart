@@ -13,10 +13,11 @@ class CodeViewWidget extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-          child: Text(
-            "${this.label}: ${this.title}",
-            style: Theme.of(context).textTheme.display1.apply(color: Colors.black)
-          ),
+          child: Text("${this.label}: ${this.title}",
+              style: Theme.of(context)
+                  .textTheme
+                  .display1
+                  .apply(color: Colors.black)),
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
@@ -28,5 +29,4 @@ class CodeViewWidget extends StatelessWidget {
       ],
     );
   }
-  
 }
