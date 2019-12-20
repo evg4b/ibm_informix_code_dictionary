@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ibm_informix_code_dictionary/status_code.dart';
+
+import 'models/status_code_list_item.dart';
 
 class CodeListTile extends StatelessWidget {
-  StatusCode statusCode;
+  StatusCodeListItem statusCode;
+  Function onPress;
 
-  CodeListTile(this.statusCode);
+  CodeListTile({@required this.statusCode, @required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class CodeListTile extends StatelessWidget {
         style: Theme.of(context).textTheme.headline,
       ),
       subtitle: Text(this.statusCode.description),
-      onTap: () {},
+      onTap: this.onPress,
     );
   }
 }

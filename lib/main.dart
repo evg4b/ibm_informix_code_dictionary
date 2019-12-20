@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'my_home_page.dart';
+import 'package:ibm_informix_code_dictionary/dictionary_home_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'IBM Informix сode dictionary'),
+      home: DictionaryHomePage(title: 'IBM Informix сode dictionary'),
     );
   }
 }
