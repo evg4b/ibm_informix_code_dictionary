@@ -9,7 +9,11 @@ The dictionary of codes for IBM Informix DBMS.
 
 ## Screenshots
 
-![Screenshot 1](https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_1.jpg)
-![Screenshot 2](https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_2.jpg)
-![Screenshot 3](https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_3.jpg)
-![Screenshot 4](https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_4.jpg)
+<div>
+ <img width="48%" alt="Screenshot 1" src="https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_1.jpg" />
+ <img width="48%" alt="Screenshot 2" src="https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_2.jpg" />
+</div>
+<div>
+ <img width="48%" alt="Screenshot 3" src="https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_3.jpg">
+ <img width="48%" alt="Screenshot 4" src="https://github.com/evg4b/ibm_informix_code_dictionary/raw/master/assets/Screenshot_4.jpg">
+</div>
