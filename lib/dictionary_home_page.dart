@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ibm_informix_code_dictionary/code_view_page.dart';
-import 'package:ibm_informix_code_dictionary/models/part_of_collection.dart';
 import 'package:ibm_informix_code_dictionary/services/db_provider.dart';
 import 'package:infinite_widgets/infinite_widgets.dart';
 
@@ -43,11 +42,13 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
         title: _isSearching ? _buildSearchField() : Text(widget.title),
         actions: _buildActions(),
       ),
-      body: FutureBuilder<PartOfCollection<StatusCodeListItem>>(
-        future: DBProvider.db.getClollection(searchQuery, _data.length),
-        builder: (BuildContext context,
-            AsyncSnapshot<PartOfCollection<StatusCodeListItem>> snapshot) {
+      body: FutureBuilder<int>(
+        future: DBProvider.db.count(searchQuery),
+        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data == 0) {
+              return Center(child: Text("Nothing found", style: Theme.of(context).textTheme.caption));
+            }
             return InfiniteListView.separated(
               itemBuilder: (context, index) {
                 var statusCode = _data[index];
@@ -57,7 +58,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
                 );
               },
               itemCount: _data.length,
-              hasNext: _data.length < snapshot.data.count,
+              hasNext: _data.length < snapshot.data,
               nextData: this.loadNextData,
               separatorBuilder: (context, index) => Divider(height: 1),
             );
@@ -70,9 +71,9 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   }
 
   loadNextData() {
-    DBProvider.db.getClollection(searchQuery, _data.length)
+    DBProvider.db.getList(searchQuery, _data.length)
       .then((newItems) {
-        _data.addAll(newItems.items);
+        _data.addAll(newItems);
         print('${_data.length} data now');
         setState(() {});
       });
@@ -87,6 +88,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
 
   void updateSearchQuery(String newQuery) {
     setState(() {
+      _data.clear();
       searchQuery = newQuery;
     });
   }
@@ -95,6 +97,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     setState(() {
       _isSearching = false;
       _searchQuery.clear();
+      _data.clear();
       searchQuery = "";
     });
   }
@@ -123,7 +126,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
             setState(() {
               if (this._searchQuery.text.isNotEmpty) {
                 _searchQuery.clear();
-                searchQuery = "";
+                _data.clear();
               } else {
                 _isSearching = false;
               }

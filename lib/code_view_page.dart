@@ -15,7 +15,7 @@ class CodeViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<StatusCode>(
-      future: DBProvider.db.getClient(id),
+      future: DBProvider.db.getCode(id),
       builder: (BuildContext context, AsyncSnapshot<StatusCode> snapshot) {
         if (snapshot.hasData) {
           return Scaffold(

@@ -88,17 +88,20 @@ class _CodeViewWidgetState extends State<CodeViewWidget> {
             .display1
             .apply(color: Colors.black)),
         ),
-        IconButton(
-          tooltip: "Change language",
-          icon: Icon(
-            Icons.translate,
-            color: Colors.orangeAccent,
-          ),
-          onPressed: () {
-            setState(() {
-              _translate = !_translate;
-            });
-          }
+        Padding(
+          padding: EdgeInsets.fromLTRB(3.0, 0, 9.0, 0),
+          child: IconButton(
+            tooltip: "Change language",
+            icon: Icon(
+              Icons.translate,
+              color: Colors.orangeAccent,
+            ),
+            onPressed: () {
+              setState(() {
+                _translate = !_translate;
+              });
+            }
+          )
         )
       ],
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

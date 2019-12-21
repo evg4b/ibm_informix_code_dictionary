@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:ibm_informix_code_dictionary/models/part_of_collection.dart';
 import 'package:ibm_informix_code_dictionary/models/status_code.dart';
 import 'package:ibm_informix_code_dictionary/models/status_code_list_item.dart';
 import 'package:path/path.dart';
@@ -35,21 +34,14 @@ class DBProvider {
     return await openDatabase(path, version: 1);
   }
 
-  Future<StatusCode> getClient(int id) async {
+  Future<StatusCode> getCode(int id) async {
     final db = await database;
     var res = await db.query("status_codes", where: "id = ?", whereArgs: [id]);
     return res.isNotEmpty ? StatusCode.fromMap(res.first) : Null;
   }
 
-  Future<PartOfCollection<StatusCodeListItem>> getClollection(String query, int skip) async {
-    var data = await Future.wait([getList(query, skip), _count(query)]);
-    return PartOfCollection(
-      items: data.first,
-      count: data.last,
-    );
-  }
-
   Future<List<StatusCodeListItem>> getList(String query, int skip) async {
+    print("List by $query");
     final db = await database;
     var res = await db.rawQuery(
         "SELECT id, code, short_description FROM status_codes WHERE code LIKE '%$query%' ORDER BY code LIMIT $skip, 20");
@@ -57,7 +49,8 @@ class DBProvider {
     return res.isNotEmpty ? d.toList() : List<StatusCodeListItem>();
   }
 
-  Future<int> _count(String query) async {
+  Future<int> count(String query) async {
+    print("Count by $query");
     final db = await database;
     var res = await db.rawQuery(
         "SELECT COUNT(*) AS count FROM status_codes WHERE code LIKE '%$query%'");
