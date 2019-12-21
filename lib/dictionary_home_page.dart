@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ibm_informix_code_dictionary/code_view_page.dart';
 import 'package:ibm_informix_code_dictionary/models/status_code.dart';
+import 'package:ibm_informix_code_dictionary/services/db_provider.dart';
 
 import 'models/status_code.dart';
 import 'widgets/code_list_tile.dart';
@@ -11,8 +12,6 @@ class DictionaryHomePage extends StatefulWidget {
   DictionaryHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  bool _isSearching;
-
   @override
   _DictionaryHomePageState createState() => _DictionaryHomePageState();
 }
@@ -32,36 +31,43 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: _isSearching ? const BackButton() : null,
+        leading: _isSearching
+            ? IconButton(
+                tooltip: "Назад",
+                icon: Icon(Icons.arrow_back),
+                onPressed: _stopSearching,
+              )
+            : null,
         title: _isSearching ? _buildSearchField() : Text(widget.title),
         actions: _buildActions(),
       ),
-      body: ListView.builder(
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            var statusCode = StatusCodeListItem(
-                codes: "$index", description: "Descriptio nof $index");
-            print("Build $index item");
-            return CodeListTile(
-              statusCode: statusCode,
-              onPress: _selectCode(statusCode),
-            );
-          }),
+      body: FutureBuilder<List<StatusCodeListItem>>(
+        future: DBProvider.db.getList(searchQuery),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<StatusCodeListItem>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  var statusCode = snapshot.data[index];
+                  print("Build $index item");
+                  return CodeListTile(
+                    statusCode: statusCode,
+                    onPress: _selectCode(statusCode),
+                  );
+                });
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 
   Function _selectCode(StatusCodeListItem statusCode) {
     return () async {
-      await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CodeViewPage(
-                    statusCode: StatusCode(
-                        code: statusCode.codes,
-                        descriptionRus:
-                            "dklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfkdklsfjdsfjlsdfk"),
-                  )));
-      _stopSearching();
+      await Navigator.push(context,
+          MaterialPageRoute(builder: (context) => CodeViewPage(statusCode.id)));
     };
   }
 
@@ -76,8 +82,9 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     print("close search box");
     setState(() {
       _isSearching = false;
+      _searchQuery.clear();
+      searchQuery = "";
     });
-    _clearSearchQuery();
   }
 
   Widget _buildSearchField() {
@@ -101,13 +108,17 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     if (_isSearching) {
       return <Widget>[
         new IconButton(
+          tooltip: "Очистить",
           icon: const Icon(Icons.clear),
           onPressed: () {
-            if (_searchQuery == null || _searchQuery.text.isEmpty) {
-              Navigator.pop(context);
-              return;
-            }
-            _clearSearchQuery();
+            setState(() {
+              if (this._searchQuery.text.isNotEmpty) {
+                _searchQuery.clear();
+                searchQuery = "";
+              } else {
+                _isSearching = false;
+              }
+            });
           },
         ),
       ];
@@ -115,25 +126,15 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
 
     return <Widget>[
       new IconButton(
+        tooltip: "Поиск",
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),
     ];
   }
 
-  void _clearSearchQuery() {
-    print("close search box");
-    setState(() {
-      _searchQuery.clear();
-      updateSearchQuery("Search query");
-    });
-  }
-
   void _startSearch() {
     print("open search box");
-    ModalRoute.of(context)
-        .addLocalHistoryEntry(new LocalHistoryEntry(onRemove: _stopSearching));
-
     setState(() {
       _isSearching = true;
     });

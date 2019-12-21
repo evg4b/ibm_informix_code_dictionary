@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ibm_informix_code_dictionary/services/db_provider.dart';
 import 'package:ibm_informix_code_dictionary/widgets/code_view.dart';
 
 import 'models/status_code.dart';
@@ -6,16 +7,29 @@ import 'models/status_code.dart';
 final controller = PageController(initialPage: 1);
 
 class CodeViewPage extends StatelessWidget {
-  final StatusCode statusCode;
-  CodeViewPage({this.statusCode});
+  final int id;
+  CodeViewPage(this.id);
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<StatusCode>(
+      future: DBProvider.db.getClient(id),
+      builder: (BuildContext context, AsyncSnapshot<StatusCode> snapshot) {
+        if (snapshot.hasData) {
+          return _buildTabs(snapshot);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  DefaultTabController _buildTabs(AsyncSnapshot<StatusCode> snapshot) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(this.statusCode.shortDescriptionRus),
+          title: Text(snapshot.data.descriptionEng),
           bottom: TabBar(
             tabs: [
               Tab(text: "Русский"),
@@ -27,13 +41,13 @@ class CodeViewPage extends StatelessWidget {
           children: [
             CodeViewWidget(
               label: "Код",
-              title: this.statusCode.shortDescriptionRus,
-              description: this.statusCode.descriptionRus,
+              title: snapshot.data.code,
+              description: snapshot.data.descriptionRus,
             ),
             CodeViewWidget(
               label: "Code",
-              title: this.statusCode.shortDescriptionEng,
-              description: this.statusCode.descriptionEng,
+              title: snapshot.data.code,
+              description: snapshot.data.descriptionEng,
             ),
           ],
         ),

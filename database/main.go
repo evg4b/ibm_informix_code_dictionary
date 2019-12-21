@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"encoding/csv"
 	"fmt"
+	gt "github.com/bas24/googletranslatefree"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 	"sync"
-	// gt "github.com/bas24/googletranslatefree"
+	"time"
 )
 
 type item struct {
@@ -55,6 +56,7 @@ func main() {
 	isHeader := true
 	var wg sync.WaitGroup
 	i := 1
+	go flush(writer)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if len(strings.TrimSpace(line)) == 0 {
@@ -66,7 +68,7 @@ func main() {
 				writeFile(writer, i, code, header.String(), body.String())
 				i++
 			}
-			// time.Sleep(time.Second)
+			time.Sleep(time.Second * 3)
 			header.Reset()
 			body.Reset()
 			code = items[1]
@@ -88,7 +90,6 @@ func main() {
 var re = regexp.MustCompile(`^(-?\d+)(\s\(-?\d+\))?`)
 var re1 = regexp.MustCompile(`^\s*[Ww][Aa][Rr][Nn][Ii][Nn][Gg]\s*(-?\d+)?\s*:`)
 var re2 = regexp.MustCompile(`^\s*[Ee][Rr][Rr][Oo][Rr]\s+-?(\d+)?\s*:`)
-var delimeter string = "\n##############################################################\n"
 
 func writeFile(writer *csv.Writer, id int, code, header, body string) {
 	s := re.ReplaceAllString(header, ``)
@@ -97,11 +98,11 @@ func writeFile(writer *csv.Writer, id int, code, header, body string) {
 	s3 := strings.ReplaceAll(s2, "&lt;", "<")
 	s4 := strings.ReplaceAll(s3, "&gt;", ">")
 	headerEng := strings.TrimSpace(s4)
-	headerRus := "RUS"
-	// headerRus, _ := gt.Translate(headerEng, "en", "ru")
+	// headerRus := "RUS"
+	headerRus, _ := gt.Translate(headerEng, "en", "ru")
 	bodyEng := strings.TrimSpace(body)
-	// bodyRus, _ := gt.Translate(bodyEng, "en", "ru")
-	bodyRus := "RUS"
+	bodyRus, _ := gt.Translate(bodyEng, "en", "ru")
+	// bodyRus := "RUS"
 	writer.Write([]string{
 		fmt.Sprintf("%d", id),
 		code,
@@ -111,4 +112,14 @@ func writeFile(writer *csv.Writer, id int, code, header, body string) {
 		bodyRus,
 	})
 	log.Println("Code " + code + " was written")
+}
+
+func flush(writer *csv.Writer) {
+	for {
+		if writer != nil {
+			log.Println("Flush")
+			writer.Flush()
+		}
+		time.Sleep(time.Minute)
+	}
 }

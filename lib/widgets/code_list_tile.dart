@@ -12,7 +12,7 @@ class CodeListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        "Статус код: ${this.statusCode.codes}",
+        "Статус код: ${this.statusCode.code}",
         style: Theme.of(context).textTheme.headline,
       ),
       subtitle: Text(this.statusCode.description),
