@@ -14,8 +14,8 @@ class CodeListTile extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-          title: Text("Статус код: ${this.statusCode.code}"),
-          subtitle: Text(this.statusCode.description ?? "Нет описания"),
+          title: Text("Status code: ${this.statusCode.code}"),
+          subtitle: Text(this.statusCode.description),
         ),
         onTapDown: (details) {
           this.onPress();

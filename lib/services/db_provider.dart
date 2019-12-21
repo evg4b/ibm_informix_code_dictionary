@@ -41,7 +41,6 @@ class DBProvider {
   }
 
   Future<List<StatusCodeListItem>> getList(String query, int skip) async {
-    print("List by $query");
     final db = await database;
     var res = await db.rawQuery(
         "SELECT id, code, short_description FROM status_codes WHERE code LIKE '%$query%' ORDER BY code LIMIT $skip, 20");
@@ -50,7 +49,6 @@ class DBProvider {
   }
 
   Future<int> count(String query) async {
-    print("Count by $query");
     final db = await database;
     var res = await db.rawQuery(
         "SELECT COUNT(*) AS count FROM status_codes WHERE code LIKE '%$query%'");

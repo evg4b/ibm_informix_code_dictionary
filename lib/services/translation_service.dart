@@ -16,13 +16,10 @@ class TranslationService {
   }
 
   Future<String> translate(String text) async {
-    print("Translation");
     if (_cache[text] != null) {
-      print("Translation from cache");
       return _cache[text];
     }
-    var translation = await _engine.translate(text, to: "ru");
-    print("Translation from api");
+    var translation = await _engine.translate(text, from:"en", to: "ru");
     _cache[text] = translation;
     return translation;
   }

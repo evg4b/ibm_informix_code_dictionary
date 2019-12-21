@@ -34,7 +34,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
       appBar: AppBar(
         leading: _isSearching
             ? IconButton(
-                tooltip: "Назад",
+                tooltip: "Back",
                 icon: Icon(Icons.arrow_back),
                 onPressed: _stopSearching,
               )
@@ -74,7 +74,6 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     DBProvider.db.getList(searchQuery, _data.length)
       .then((newItems) {
         _data.addAll(newItems);
-        print('${_data.length} data now');
         setState(() {});
       });
   }
@@ -107,7 +106,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
       controller: _searchQuery,
       autofocus: true,
       decoration: const InputDecoration(
-        hintText: 'Поиск...',
+        hintText: 'Search...',
         border: InputBorder.none,
         hintStyle: const TextStyle(color: Colors.white54),
       ),
@@ -120,7 +119,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     if (_isSearching) {
       return <Widget>[
         new IconButton(
-          tooltip: "Очистить",
+          tooltip: "Clear",
           icon: const Icon(Icons.clear),
           onPressed: () {
             setState(() {
@@ -138,7 +137,7 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
 
     return <Widget>[
       new IconButton(
-        tooltip: "Поиск",
+        tooltip: "Search",
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),

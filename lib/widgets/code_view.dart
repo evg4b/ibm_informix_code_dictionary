@@ -44,14 +44,14 @@ class _CodeViewWidgetState extends State<CodeViewWidget> {
         future: TranslationService.engine.translate(this.code.shortDescription),
         initialData: "Loading..",
         builder: (context, snapshot) => snapshot.hasError
-          ? _boldText("Translation error")
+          ? _boldText("Translation error: ${snapshot.error.toString()}")
           : _boldText(snapshot.data),
       ),
       FutureBuilder<String> (
         future: TranslationService.engine.translate(this.code.description),
         initialData: "Loading..",
         builder: (context, snapshot) => snapshot.hasError
-          ? _regularText("Translation error")
+          ? _regularText("Translation error: ${snapshot.error.toString()}")
           : _regularText(snapshot.data),
       )
     ];
@@ -94,7 +94,7 @@ class _CodeViewWidgetState extends State<CodeViewWidget> {
             tooltip: "Change language",
             icon: Icon(
               Icons.translate,
-              color: Colors.orangeAccent,
+              color: _translate ? Colors.orangeAccent : null,
             ),
             onPressed: () {
               setState(() {
