@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ibm_informix_code_dictionary/code_view_page.dart';
-import 'package:ibm_informix_code_dictionary/models/status_code.dart';
+import 'package:ibm_informix_code_dictionary/models/part_of_collection.dart';
 import 'package:ibm_informix_code_dictionary/services/db_provider.dart';
+import 'package:infinite_widgets/infinite_widgets.dart';
 
-import 'models/status_code.dart';
 import 'widgets/code_list_tile.dart';
 import 'models/status_code_list_item.dart';
 
@@ -21,9 +20,12 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   bool _isSearching = false;
   String searchQuery = "";
 
+  List<StatusCodeListItem> _data = [];
+
   @override
   void initState() {
     super.initState();
+    _data = new List<StatusCodeListItem>();
     _searchQuery = new TextEditingController();
   }
 
@@ -41,27 +43,39 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
         title: _isSearching ? _buildSearchField() : Text(widget.title),
         actions: _buildActions(),
       ),
-      body: FutureBuilder<List<StatusCodeListItem>>(
-        future: DBProvider.db.getList(searchQuery),
+      body: FutureBuilder<PartOfCollection<StatusCodeListItem>>(
+        future: DBProvider.db.getClollection(searchQuery, _data.length),
         builder: (BuildContext context,
-            AsyncSnapshot<List<StatusCodeListItem>> snapshot) {
+            AsyncSnapshot<PartOfCollection<StatusCodeListItem>> snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  var statusCode = snapshot.data[index];
-                  print("Build $index item");
-                  return CodeListTile(
-                    statusCode: statusCode,
-                    onPress: _selectCode(statusCode),
-                  );
-                });
+            return InfiniteListView.separated(
+              itemBuilder: (context, index) {
+                var statusCode = _data[index];
+                return CodeListTile(
+                  statusCode: statusCode,
+                  onPress: _selectCode(statusCode),
+                );
+              },
+              itemCount: _data.length,
+              hasNext: _data.length < snapshot.data.count,
+              nextData: this.loadNextData,
+              separatorBuilder: (context, index) => Divider(height: 1),
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
         },
       ),
     );
+  }
+
+  loadNextData() {
+    DBProvider.db.getClollection(searchQuery, _data.length)
+      .then((newItems) {
+        _data.addAll(newItems.items);
+        print('${_data.length} data now');
+        setState(() {});
+      });
   }
 
   Function _selectCode(StatusCodeListItem statusCode) {
@@ -75,11 +89,9 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
     setState(() {
       searchQuery = newQuery;
     });
-    print("search query " + newQuery);
   }
 
   void _stopSearching() {
-    print("close search box");
     setState(() {
       _isSearching = false;
       _searchQuery.clear();
@@ -98,9 +110,6 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
       ),
       style: const TextStyle(color: Colors.white, fontSize: 16.0),
       onChanged: updateSearchQuery,
-      onSubmitted: (data) {
-        print(data);
-      },
     );
   }
 
@@ -134,9 +143,6 @@ class _DictionaryHomePageState extends State<DictionaryHomePage> {
   }
 
   void _startSearch() {
-    print("open search box");
-    setState(() {
-      _isSearching = true;
-    });
+    setState(() { _isSearching = true; });
   }
 }

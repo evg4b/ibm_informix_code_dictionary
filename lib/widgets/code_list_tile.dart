@@ -10,13 +10,17 @@ class CodeListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        "Статус код: ${this.statusCode.code}",
-        style: Theme.of(context).textTheme.headline,
+    return Material(
+      child: InkWell(
+        onTap: () {},
+        child: ListTile(
+          title: Text("Статус код: ${this.statusCode.code}"),
+          subtitle: Text(this.statusCode.description ?? "Нет описания"),
+        ),
+        onTapDown: (details) {
+          this.onPress();
+        },
       ),
-      subtitle: Text(this.statusCode.description),
-      onTap: this.onPress,
     );
   }
 }

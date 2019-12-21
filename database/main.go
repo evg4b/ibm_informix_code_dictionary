@@ -4,22 +4,12 @@ import (
 	"bufio"
 	"encoding/csv"
 	"fmt"
-	gt "github.com/bas24/googletranslatefree"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 	"sync"
-	"time"
 )
-
-type item struct {
-	Code         string
-	EngShortDesc string
-	RusShortDesc string
-	EngDesc      string
-	RusDesc      string
-}
 
 func main() {
 	file, err := os.Open("src/source.txt")
@@ -44,10 +34,8 @@ func main() {
 	writer.Write([]string{
 		"id",
 		"code",
-		"short_description_eng",
-		"description_eng",
-		"short_description_rus",
-		"description_rus",
+		"short_description",
+		"description",
 	})
 
 	var header strings.Builder
@@ -56,7 +44,6 @@ func main() {
 	isHeader := true
 	var wg sync.WaitGroup
 	i := 1
-	go flush(writer)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if len(strings.TrimSpace(line)) == 0 {
@@ -68,7 +55,6 @@ func main() {
 				writeFile(writer, i, code, header.String(), body.String())
 				i++
 			}
-			time.Sleep(time.Second * 3)
 			header.Reset()
 			body.Reset()
 			code = items[1]
@@ -98,28 +84,12 @@ func writeFile(writer *csv.Writer, id int, code, header, body string) {
 	s3 := strings.ReplaceAll(s2, "&lt;", "<")
 	s4 := strings.ReplaceAll(s3, "&gt;", ">")
 	headerEng := strings.TrimSpace(s4)
-	// headerRus := "RUS"
-	headerRus, _ := gt.Translate(headerEng, "en", "ru")
 	bodyEng := strings.TrimSpace(body)
-	bodyRus, _ := gt.Translate(bodyEng, "en", "ru")
-	// bodyRus := "RUS"
 	writer.Write([]string{
 		fmt.Sprintf("%d", id),
 		code,
 		headerEng,
 		bodyEng,
-		headerRus,
-		bodyRus,
 	})
 	log.Println("Code " + code + " was written")
-}
-
-func flush(writer *csv.Writer) {
-	for {
-		if writer != nil {
-			log.Println("Flush")
-			writer.Flush()
-		}
-		time.Sleep(time.Minute)
-	}
 }

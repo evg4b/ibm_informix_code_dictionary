@@ -21,12 +21,12 @@ class StatusCodeListItem {
       StatusCodeListItem(
         id: json["id"],
         code: json["code"],
-        description: json["short_description_rus"],
+        description: json["short_description"],
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
         "code": code,
-        "short_description_rus": description,
+        "short_description": description,
       };
 }
